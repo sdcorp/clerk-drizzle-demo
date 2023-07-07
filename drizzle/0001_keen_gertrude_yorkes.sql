@@ -1,0 +1,1 @@
+ALTER TABLE `counters` RENAME COLUMN `rating` TO `count`;
