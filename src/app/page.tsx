@@ -13,6 +13,7 @@ import {
 } from "@/components/Increment"
 
 export const revalidate = 0
+export const dynamic = "force-dynamic"
 
 function SuspenseLoading({
   children,

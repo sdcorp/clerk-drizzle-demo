@@ -7,6 +7,9 @@ import { sleep } from "@/lib/utils"
 import { db } from "@/db"
 import { counters } from "@/db/schema"
 
+export const revalidate = 0
+export const dynamic = "force-dynamic"
+
 export async function PATCH(request: Request) {
   const body = (await request.json()) as { value: number; from: string }
   const kvCount = await kv.incr("count")
