@@ -12,7 +12,7 @@ import {
   IncrementViaServerActions,
 } from "@/components/Increment"
 
-// export const revalidate = 0
+export const revalidate = 0
 
 function SuspenseLoading({
   children,
