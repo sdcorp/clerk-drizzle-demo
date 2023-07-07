@@ -1,5 +1,5 @@
 import { revalidatePath } from "next/cache"
-import { NextResponse } from "next/server"
+import { NextResponse, type NextRequest } from "next/server"
 import { kv } from "@vercel/kv"
 import { eq } from "drizzle-orm"
 
@@ -10,7 +10,10 @@ import { counters } from "@/db/schema"
 export const revalidate = 0
 export const dynamic = "force-dynamic"
 
-export async function PATCH(request: Request) {
+export async function PATCH(request: NextRequest) {
+  const runRevalidatePath = Number(
+    request.nextUrl.searchParams.get("runRevalidatePath") ?? 0,
+  )
   const body = (await request.json()) as { value: number; from: string }
   const kvCount = await kv.incr("count")
 
@@ -42,13 +45,15 @@ export async function PATCH(request: Request) {
 
   await sleep()
 
-  revalidatePath("/")
+  if (runRevalidatePath) {
+    revalidatePath("/")
+  }
 
   return NextResponse.json(
     {
       success: true,
       message: "Updated",
-      meta: { ...body, newCount, kvCount },
+      meta: { ...body, newCount, kvCount, runRevalidatePath },
     },
     { status: 200 },
   )

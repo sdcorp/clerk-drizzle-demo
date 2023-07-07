@@ -1,6 +1,7 @@
 "use client"
 
 import { useTransition } from "react"
+import { useRouter } from "next/navigation"
 
 import { cn } from "@/lib/utils"
 
@@ -20,7 +21,7 @@ export function IncrementViaApiHandler({
       )}
       type="button"
       onClick={async () => {
-        const res = await fetch("/api/increment", {
+        const res = await fetch("/api/increment?runRevalidatePath=1", {
           method: "PATCH",
           body: JSON.stringify({
             value: currentValue,
@@ -34,6 +35,41 @@ export function IncrementViaApiHandler({
       }}
     >
       IncrementViaApiHandler
+    </button>
+  )
+}
+
+export function IncrementViaRefresh({
+  currentValue,
+}: {
+  currentValue: number
+}) {
+  const router = useRouter()
+  return (
+    <button
+      className={cn(
+        "rounded border-2 border-dashed border-blue-500 p-4",
+        false &&
+          "before:mr-2 before:inline-block before:h-3 before:w-3 before:rounded-full before:bg-red-600",
+      )}
+      type="button"
+      onClick={async () => {
+        const res = await fetch("/api/increment?runRevalidatePath=0", {
+          method: "PATCH",
+          body: JSON.stringify({
+            value: currentValue,
+            from: "IncrementViaApiHandler",
+          }),
+        })
+
+        const r = (await res.json()) as unknown
+
+        router.refresh()
+
+        console.log("IncrementViaApiHandler res:", { r })
+      }}
+    >
+      IncrementViaRefresh
     </button>
   )
 }

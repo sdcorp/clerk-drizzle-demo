@@ -9,6 +9,7 @@ import { counters } from "@/db/schema"
 import Counter from "@/components/Counter"
 import {
   IncrementViaApiHandler,
+  IncrementViaRefresh,
   IncrementViaServerActions,
 } from "@/components/Increment"
 
@@ -81,6 +82,7 @@ export default async function Home() {
           </button>
           <IncrementViaApiHandler currentValue={counter?.count ?? 0} />
           <IncrementViaServerActions currentValue={counter?.count ?? 0} />
+          <IncrementViaRefresh currentValue={counter?.count ?? 0} />
           <p className="text-3xl text-yellow-500">
             Counter: {counter?.count ?? 0}
           </p>
