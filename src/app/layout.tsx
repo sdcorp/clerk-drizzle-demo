@@ -19,7 +19,7 @@ export default function RootLayout({
 }) {
   return (
     <ClerkProvider>
-      <html lang="en">
+      <html lang="en" suppressHydrationWarning={true}>
         <body className={inter.className}>
           <main className="flex min-h-screen flex-col items-center gap-8 p-24">
             <nav className="flex gap-8">

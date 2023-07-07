@@ -9,8 +9,6 @@ import { db } from "@/db"
 import { counters } from "@/db/schema"
 
 export async function updateCounterAction(currentCount: number) {
-  "use server"
-
   // const currentCount = counter?.count ?? 0
 
   if (!currentCount) {
