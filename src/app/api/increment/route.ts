@@ -28,20 +28,9 @@ export async function PATCH(request: NextRequest) {
     )
   }
 
-  const currentCount = body.value
   const newCount = body.value + 1
 
-  console.log("PATCH counter:", {
-    currentCount,
-    newCount,
-    from: body.from,
-    kvCount,
-  })
-
-  await db
-    .update(counters)
-    .set({ count: body.value + 1 })
-    .where(eq(counters.id, 1))
+  await db.update(counters).set({ count: newCount }).where(eq(counters.id, 1))
 
   await sleep()
 

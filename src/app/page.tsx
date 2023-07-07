@@ -53,18 +53,13 @@ export default async function Home() {
     "use server"
 
     const currentCount = counter?.count ?? 0
-    if (!currentCount) {
-      console.log("no value provided for updateCounterAction")
-      return
-    }
+
+    if (!currentCount) return
 
     const newCount = currentCount + 1
 
     await db.update(counters).set({ count: newCount }).where(eq(counters.id, 1))
-
-    const kvCount = await kv.incr("count")
-
-    console.log("updateCounterAction", { currentCount, newCount, kvCount })
+    await kv.incr("count")
 
     revalidatePath("/")
   }

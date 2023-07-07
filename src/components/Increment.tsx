@@ -7,92 +7,88 @@ import { cn } from "@/lib/utils"
 
 import { updateCounterAction } from "./actions"
 
-export function IncrementViaApiHandler({
-  currentValue,
-}: {
+type ButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
+  invalid?: boolean
+  children: React.ReactNode
+}
+
+type PropsWithValue = {
   currentValue: number
-}) {
+}
+
+export function IncrementBase({
+  invalid = false,
+  children,
+  className = "",
+  ...rest
+}: ButtonProps) {
   return (
     <button
       className={cn(
         "rounded border-2 border-dashed border-cyan-400 p-4",
-        true &&
+        invalid &&
           "before:mr-2 before:inline-block before:h-3 before:w-3 before:rounded-full before:bg-red-600",
+        className,
       )}
       type="button"
+      {...rest}
+    >
+      {children}
+    </button>
+  )
+}
+
+export function IncrementViaApiHandler({ currentValue }: PropsWithValue) {
+  return (
+    <IncrementBase
+      className="border-cyan-400"
+      invalid={Boolean(1)}
       onClick={async () => {
-        const res = await fetch("/api/increment?runRevalidatePath=1", {
+        await fetch("/api/increment?runRevalidatePath=1", {
           method: "PATCH",
           body: JSON.stringify({
             value: currentValue,
             from: "IncrementViaApiHandler",
           }),
         })
-
-        const r = (await res.json()) as unknown
-
-        console.log("IncrementViaApiHandler res:", { r })
       }}
     >
       IncrementViaApiHandler
-    </button>
+    </IncrementBase>
   )
 }
 
-export function IncrementViaRefresh({
-  currentValue,
-}: {
-  currentValue: number
-}) {
+export function IncrementViaRefresh({ currentValue }: PropsWithValue) {
   const router = useRouter()
+
   return (
-    <button
-      className={cn(
-        "rounded border-2 border-dashed border-blue-500 p-4",
-        false &&
-          "before:mr-2 before:inline-block before:h-3 before:w-3 before:rounded-full before:bg-red-600",
-      )}
-      type="button"
-      onClick={async () => {
-        const res = await fetch("/api/increment?runRevalidatePath=0", {
-          method: "PATCH",
-          body: JSON.stringify({
-            value: currentValue,
-            from: "IncrementViaApiHandler",
-          }),
-        })
-
-        const r = (await res.json()) as unknown
-
-        router.refresh()
-
-        console.log("IncrementViaApiHandler res:", { r })
-      }}
-    >
-      IncrementViaRefresh
-    </button>
+    <>
+      <IncrementBase
+        className="border-blue-400"
+        onClick={async () => {
+          await fetch("/api/increment?runRevalidatePath=0", {
+            method: "PATCH",
+            body: JSON.stringify({ value: currentValue }),
+          })
+          router.refresh()
+        }}
+      >
+        IncrementViaRefresh
+      </IncrementBase>
+    </>
   )
 }
 
-export function IncrementViaServerActions({
-  currentValue,
-}: {
-  currentValue: number
-}) {
+export function IncrementViaServerActions({ currentValue }: PropsWithValue) {
   const [isPending, startTransition] = useTransition()
+
   return (
-    <button
+    <IncrementBase
       disabled={isPending}
-      className={cn(
-        "rounded border-2 border-dashed border-green-400 p-4",
-        false &&
-          "before:mr-2 before:inline-block before:h-3 before:w-3 before:rounded-full before:bg-red-600",
-        "disabled:border-gray-500",
-      )}
-      type="button"
+      className="border-green-400 disabled:border-gray-500"
       onClick={() => startTransition(() => updateCounterAction(currentValue))}
     >
       IncrementViaServerActions
-    </button>
+    </IncrementBase>
   )
 }

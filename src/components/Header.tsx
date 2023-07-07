@@ -11,6 +11,9 @@ export default function Header() {
       <Link className="hover:underline" href="/public">
         /Public
       </Link>
+      <Link className="hover:underline" href="/protected">
+        /Protected
+      </Link>
       <SignedIn>
         <UserButton afterSignOutUrl="/" />
       </SignedIn>
