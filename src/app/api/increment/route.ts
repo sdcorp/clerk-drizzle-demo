@@ -1,0 +1,45 @@
+import { revalidatePath } from "next/cache"
+import { NextResponse } from "next/server"
+import { eq } from "drizzle-orm"
+
+import { sleep } from "@/lib/utils"
+import { db } from "@/db"
+import { counters } from "@/db/schema"
+
+export async function PATCH(request: Request) {
+  const body = (await request.json()) as { value: number; from: string }
+
+  if (!body?.value) {
+    return NextResponse.json(
+      {
+        success: false,
+        message: "No valid value provided",
+        meta: { body },
+      },
+      { status: 400 },
+    )
+  }
+
+  const currentCount = body.value
+  const newCount = body.value + 1
+
+  console.log("PATCH counter:", { currentCount, newCount, from: body.from })
+
+  await db
+    .update(counters)
+    .set({ count: body.value + 1 })
+    .where(eq(counters.id, 1))
+
+  await sleep(1000)
+
+  revalidatePath("/")
+
+  return NextResponse.json(
+    {
+      success: true,
+      message: "Updated",
+      meta: { ...body, newCount },
+    },
+    { status: 200 },
+  )
+}
