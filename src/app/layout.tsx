@@ -5,6 +5,8 @@ import { Inter } from "next/font/google"
 import Link from "next/link"
 import { ClerkProvider } from "@clerk/nextjs"
 
+import Header from "@/components/Header"
+
 const inter = Inter({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
@@ -22,14 +24,7 @@ export default function RootLayout({
       <html lang="en" suppressHydrationWarning={true}>
         <body className={inter.className} suppressHydrationWarning={true}>
           <main className="flex min-h-screen flex-col items-center gap-8 p-24">
-            <nav className="flex gap-8">
-              <Link className="hover:underline" href="/">
-                Home
-              </Link>
-              <Link className="hover:underline" href="/public">
-                /Public
-              </Link>
-            </nav>
+            <Header />
             {children}
           </main>
         </body>
