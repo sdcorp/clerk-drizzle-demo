@@ -40,7 +40,7 @@ export async function PATCH(request: Request) {
     .set({ count: body.value + 1 })
     .where(eq(counters.id, 1))
 
-  await sleep(1000)
+  await sleep()
 
   revalidatePath("/")
 

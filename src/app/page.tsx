@@ -44,7 +44,8 @@ function SuspenseLoading({
 export default async function Home() {
   const counter = await db.query.counters.findFirst()
   const kvCount = await kv.get<number>("count")
-  await sleep(1000)
+  await sleep()
+
   // const counter = await getCounter()
 
   async function updateCounterAction() {
@@ -85,7 +86,7 @@ export default async function Home() {
           </p>
           <p className="text-3xl text-yellow-500">KV Counter: {kvCount ?? 0}</p>
           <SuspenseLoading enabled={Boolean(0)}>
-            <Counter delay={3000} />
+            <Counter />
           </SuspenseLoading>
         </form>
       </div>

@@ -22,7 +22,7 @@ export async function updateCounterAction(currentCount: number) {
 
   const kvCount = await kv.incr("count")
 
-  await sleep(1000)
+  await sleep()
 
   console.log("updateCounterAction imperatively", {
     currentCount,
