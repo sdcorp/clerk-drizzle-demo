@@ -1,5 +1,6 @@
 import { revalidatePath } from "next/cache"
 import { NextResponse } from "next/server"
+import { kv } from "@vercel/kv"
 import { eq } from "drizzle-orm"
 
 import { sleep } from "@/lib/utils"
@@ -8,6 +9,7 @@ import { counters } from "@/db/schema"
 
 export async function PATCH(request: Request) {
   const body = (await request.json()) as { value: number; from: string }
+  const kvCount = await kv.incr("count")
 
   if (!body?.value) {
     return NextResponse.json(
@@ -23,7 +25,12 @@ export async function PATCH(request: Request) {
   const currentCount = body.value
   const newCount = body.value + 1
 
-  console.log("PATCH counter:", { currentCount, newCount, from: body.from })
+  console.log("PATCH counter:", {
+    currentCount,
+    newCount,
+    from: body.from,
+    kvCount,
+  })
 
   await db
     .update(counters)
@@ -38,7 +45,7 @@ export async function PATCH(request: Request) {
     {
       success: true,
       message: "Updated",
-      meta: { ...body, newCount },
+      meta: { ...body, newCount, kvCount },
     },
     { status: 200 },
   )
